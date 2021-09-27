@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #box  img {
+        width: 150px;
+        height: 150px;
+    }
+    #box  div {
+        width: 100%;
+        height: 350px;
+    }
+    #box div div {
+        width: 40%;
+        margin: 30px 60px ;
+        text-align: center;
+    }
+    #box > div > div:hover {
+        box-shadow: 0 48px 146px 0 rgba(0,0,0,0.4);
+    }
+    #box{
+        width: 100%;
+        display: flex;
+    }
+</style>
+<body>
+    <div id="box">
+
+    </div>
+    <script>
+       
+        
+       fetch("https://newsapi.org/v2/top-headlines?country=in&apiKey=f1bde0331dda432ba7d5d2c08bd60b5a")
+        .then(function(response){
+            console.log(response)
+            return response.json()
+        })
+        .then(function(response){
+            console.log(response.articles);
+            createUserReadsNews(response.articles)
+            
+        })
+        .catch(function(error){
+
+        })
+
+        function createUserReadsNews(articles){
+            const card = document.getElementById('box');
+            card.innerHTML="";
+            const div = document.createElement("div");
+            var i =0;
+            for(let userData of articles){
+                const news = createNews(userData);
+                if(i%3 == 3){
+                    news.style.clear="left";
+                }
+                else {
+                    news.style.float="left";
+                }
+                i++;
+                div.append(news)
+            }
+            card.append(div)
+        }
+
+        function createNews(userData){
+            const div = document.createElement("div");
+
+            const title = document.createElement("h2");
+            title.textContent = userData.title
+
+            const img = document.createElement('img');
+            img.src = userData.urlToImage;
+
+           const content = document.createElement('p');
+           if(userData.content == null){
+             content.textContent = userData.description;
+           }
+           else {
+            content.textContent = userData.content;
+           }
+          
+            div.append(title,img,content);
+            return div
+        }
+    </script>
+</body>
+</html>
