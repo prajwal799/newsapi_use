@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Entertanment</title>
+    <!-- @import url('https://fonts.googleapis.com/css2?family=Caramel&display=swap'); -->
+   
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+    body{
+        margin:0px;
+        padding: 0px;
+        font-family: Pacifico;
+    }
+    #box{
+        width: 100%;
+        display: flex;
+    }
+    #nav {
+        width: 100%;
+        height: 70px;
+        background-color: red;
+        position: fixed;
+        color: white;
+        display: grid;
+    }
+    #nav_ul {
+           width: 600px;
+            height: 20px;
+            display: flex;
+            list-style: none;
+            margin-left: 200px;
+    }
+    #nav_ul > li {
+        margin-left: 100px;
+    }
+    #nav_ul > li > a {
+        text-decoration: none;
+        font-size: 25px;
+    }
+    #nav_ul > li > a:hover{
+        color:white;
+    }
+    #box{
+        width: 100%;
+        display: flex;
+    }
+    #box div {
+        width: 100%;
+        height: 400px;
+    }
+    
+    #box div div {
+        width: 40%;
+        margin: 30px 60px;
+        text-align: center;
+    }
+    #box div div:hover{
+        box-shadow: 0px 30px 100px 0 rgba(0, 0, 0,0.4);
+    }
+    #box img {
+        width: 150px;
+        height:140px;
+    }
+    #box h5 {
+        margin-left: 50%;
+    }
+</style>
+<body>
+    <div id="nav">
+        <ul id="nav_ul">
+            <li><a href="news.html">News</a></li>
+            <li><a href="sports.html">Sports</a></li>
+            <li><a href="entertanment.html">Entertanment</a></li>
+            <li><a href="technology.html">Technology</a></li>
+        </ul>
+
+    </div></body></br><br/></br>
+    <div id="box">
+
+    </div>
+    <script>
+        fetch('https://newsapi.org/v2/top-headlines?category=entertainment&country=in&apiKey=f1bde0331dda432ba7d5d2c08bd60b5a')
+        .then(function(response){
+            console.log(response);
+            return response.json()
+        })
+        .then(function(response){
+            console.log(response.articles)
+            createTechnologyNews(response.articles)
+        })
+        .catch(function(error){
+
+        })
+
+        function createTechnologyNews(articles){
+            var box = document.getElementById("box");
+            box.innerHTML="";
+            var i =0;
+            var div = document.createElement("div");
+            for(let userdata of articles){
+                const card = createTechnology(userdata);
+
+                if(i%2 == 2){
+                    card.style.clear="left";
+                }
+                else{
+                    card.style.float="left";
+                }
+                div.append(card);
+            }
+            box.append(div);
+        }
+
+        function createTechnology(userData){
+            const div = document.createElement("div");
+
+            const h3 = document.createElement("h3");
+            h3.textContent= userData.title;
+
+            const img = document.createElement("img");
+            img.src =userData.urlToImage;
+
+            const detalis = document.createElement("p");
+            detalis.textContent = userData.description;
+
+            const author = document.createElement("h5");
+            author.textContent = userData.author;
+
+            div.append(h3,img,detalis,author);
+            return div
+        }
+    </script>  
+</body>
+</html>
