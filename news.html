@@ -59,82 +59,144 @@
     #nav_ul > li > a:hover{
         color:white;
     }
+    #search{
+        margin-top: 7px;
+        height: 20px;
+    }
+    #searchbtn{
+        margin-top: 7px;
+        height: 25px;
+    }
+    #pagination {
+        width: 200px;
+        margin:30px auto;
+    }
 </style>
 <body>
     <div id="nav">
         <ul id="nav_ul">
             
+            <input id="search" placeholder="search"/>
+            <button id="searchbtn">search</button>
             <li><a href="sports.html">Sports</a></li>
             <li><a href="entertanment.html">Entertanment</a></li>
             <li><a href="technology.html">Technology</a></li>
+            
         </ul>
 
     </div></body></br><br/>
+    <div id="pagination">
+
+    </div>
     <div id="box">
 
     </div>
-    
     <script>
        let currentPage = 1;
-       let limit = 5;
-    
+       let limit = 6;
+       window.addEventListener("load",function(){
+           const searchbtn = document.getElementById("searchbtn");
+           searchbtn.addEventListener("click",createNewsapi);
+         createPagination();
         
-       fetch("https://newsapi.org/v2/top-headlines?country=in&apiKey=f1bde0331dda432ba7d5d2c08bd60b5a")
+        const pagination = document.getElementById("pagination");
+        pagination.addEventListener("click",handlePage);
+       })
+
+       async function handlePage(){
+           try{
+            const pageNumber = parseInt(event.target.name);
+            // pageNumber++;
+            currentPage = pageNumber + 1;
+            createNewsapi(currentPage,limit);
+             createPagination();
+           }
+           catch(e){
+             // handle error
+           }
+        
+       }
+        
+       function createNewsapi(page,limit){
+           page = page || 1;
+           limit = limit || 6;
+           const search = document.getElementById("search").value;
+        fetch(`https://newsapi.org/v2/everything?q=${search}&page=${page}&pageSize=${limit}&apiKey=f1bde0331dda432ba7d5d2c08bd60b5a`)
         .then(function(response){
-            console.log(response)
             return response.json()
         })
         .then(function(response){
-            console.log(response.articles);
-            console.log(1)
             createUserReadsNews(response.articles)
-            console.log(2)
                    
         })
-        .catch(function(error){
+       }
 
-        })
-        
-        function createUserReadsNews(articles){
-            const card = document.getElementById('box');
-            card.innerHTML="";
-            const div = document.createElement("div");
-            var i =0;
-            for(let userData of articles){
-                const news = createNews(userData);
-                if(i%2 == 2){
-                    news.style.clear="left";
+                function createPagination(){
+                
+                    const div = document.getElementById("pagination");
+                    div.innerHTML= null;
+
+                    const prevbtn = document.createElement("button");
+                    prevbtn.textContent = "Previous";
+                    if(currentPage === 1){
+                        prevbtn.disabled =true;
+                    }
+                    prevbtn.name = currentPage-1;
+                
+                    const currentbtn = document.createElement("button");
+                    currentbtn.textContent = "Current";
+                    currentbtn.name = currentPage;
+                    
+                    const nextbtn = document.createElement("button");
+                    nextbtn.textContent = "Next";
+                    nextbtn.name = currentPage+1;
+                      
+
+                    div.append(prevbtn,currentbtn,nextbtn)
                 }
-                else {
-                    news.style.float="left";
+
+
+                 function createUserReadsNews(articles){
+                    const card = document.getElementById('box');
+                    card.innerHTML="";
+                    const div = document.createElement("div");
+                    var i =0;
+                    for(let userData of articles){
+                        const news = createNews(userData);
+                        if(i%2 == 2){
+                            news.style.clear="left";
+                        }
+                        else {
+                            news.style.float="left";
+                        }
+                        i++;
+                        div.append(news)
+                    }
+                    card.append(div)
+                    
+                 }
+
+                function createNews(userData){
+                 const div = document.createElement("div");
+
+                    const title = document.createElement("h2");
+                    title.textContent = userData.title
+
+                    const img = document.createElement('img');
+                    img.src = userData.urlToImage;
+
+                    const content = document.createElement('p');
+                    if(userData.content == null){
+                        content.textContent = userData.description;
+                    }
+                    else {
+                        content.textContent = userData.content;
+                    }
+                
+                    div.append(title,img,content);
+                    return div
                 }
-                i++;
-                div.append(news)
-            }
-            card.append(div)
-            
-        }
-
-        function createNews(userData){
-            const div = document.createElement("div");
-
-            const title = document.createElement("h2");
-            title.textContent = userData.title
-
-            const img = document.createElement('img');
-            img.src = userData.urlToImage;
-
-           const content = document.createElement('p');
-           if(userData.content == null){
-             content.textContent = userData.description;
-           }
-           else {
-            content.textContent = userData.content;
-           }
-          
-            div.append(title,img,content);
-            return div
-        }
+                 
     </script>
 </body>
 </html>
